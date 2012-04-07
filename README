@@ -1,0 +1,6 @@
+fb.py -- Python bindings for Facebook Graph API
+===============================================
+
+  >>> from fb import API
+  >>> fbapi = API(APP_ID, APP_SECRET)
+  >>> friends = fbapi.using(user_access_token).me.friends.get()
