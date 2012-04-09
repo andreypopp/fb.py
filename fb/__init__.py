@@ -47,8 +47,8 @@ __all__ = (
     "TimelineIsNotActivated", "UniqueActionAlreadyExists", "AccessTokenError",
     "AuthCodeError",
 
-    "API", "OpenGraphLocation", "create_facebook",
-    "retry_on_error", "shell", "api",)
+    "API", "OpenGraphLocation",
+    "retry_on_error",)
 
 log = logging.getLogger("fb.py")
 
