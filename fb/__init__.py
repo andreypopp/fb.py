@@ -307,10 +307,10 @@ class LocationAware(object):
 
     @property
     def using_app(self):
-        return self.loc(self, "", use_app_access_token=True)
+        return self.loc("", use_app_access_token=True)
 
     def using(self, access_token):
-        return self.loc(self, "", access_token=access_token)
+        return self.loc("", access_token=access_token)
 
     def loc(self, loc, access_token=None, use_app_access_token=False):
         return OpenGraphLocation(self, loc, access_token=access_token,
