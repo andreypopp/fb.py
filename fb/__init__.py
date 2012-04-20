@@ -463,7 +463,7 @@ class API(RequestHandler, LocationAware):
             # XXX: see facebook bug
             # [1]: https://developers.facebook.com/bugs/313906438682002
             if isinstance(result, bool) and not result:
-                raise UnknownFacebookError("returned 'false' value", r.status)
+                raise UnknownFacebookError("returned 'false' value", None, r.status)
             return result
 
         else:
@@ -480,7 +480,7 @@ class API(RequestHandler, LocationAware):
             # XXX: see facebook bug
             # [1]: https://developers.facebook.com/bugs/313906438682002
             elif isinstance(d, bool) and not d:
-                raise UnknownFacebookError("returned 'false' value", r.status)
+                raise UnknownFacebookError("returned 'false' value", None, r.status)
             else:
                 raise UnknownFacebookError("unknown error", d, r.status)
 
