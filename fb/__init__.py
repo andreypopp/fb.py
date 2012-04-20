@@ -458,7 +458,14 @@ class API(RequestHandler, LocationAware):
         if r.status == 200:
             if not json_result:
                 return r.data
-            return json.loads(r.data)
+            result = json.loads(r.data)
+
+            # XXX: see facebook bug
+            # [1]: https://developers.facebook.com/bugs/313906438682002
+            if isinstance(result, bool) and not result:
+                raise UnknownFacebookError("returned 'false' value", r.status)
+            return result
+
         else:
             d = json.loads(r.data)
             if isinstance(d, dict) and "error" in d:
@@ -469,6 +476,11 @@ class API(RequestHandler, LocationAware):
                     error.get("type", None), UnknownFacebookError)
 
                 raise ecls.specialize(message, d, r.status)
+
+            # XXX: see facebook bug
+            # [1]: https://developers.facebook.com/bugs/313906438682002
+            elif isinstance(d, bool) and not d:
+                raise UnknownFacebookError("returned 'false' value", r.status)
             else:
                 raise UnknownFacebookError("unknown error", d, r.status)
 
