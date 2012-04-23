@@ -45,7 +45,7 @@ __all__ = (
     "UnknownFacebookError", "OAuthException", "GraphMethodException",
 
     "TimelineIsNotActivated", "UniqueActionAlreadyExists", "AccessTokenError",
-    "AuthCodeError",
+    "AuthCodeError", "PermissionRequired",
 
     "API", "OpenGraphLocation",
     "retry_on_error",)
@@ -165,6 +165,9 @@ class OAuthException(FacebookError):
     AUTH_CODE_VALIDATION_FAILED = re.compile(
         "Error validating verification code")
 
+    PERMISSION_REQURIED = re.compile(
+        "\(#282\) Requires extended permission: [a-zA-Z0-9\-_]+")
+
     @classmethod
     def specialize(cls, message, data, status):
         m = cls.TIMELINE_ISNOT_ACTIVATED.match(message)
@@ -221,7 +224,13 @@ class OAuthException(FacebookError):
         m = cls.AUTH_CODE_VALIDATION_FAILED.match(message)
         if m:
             return AuthCodeError(message, data, status)
+        m = cls.PERMISSION_REQUIRED.match(message)
+        if m:
+            return PermissionRequired(message, data, status)
         return cls(message, data, status)
+
+class PermissionRequired(OAuthException):
+    """ Permission required"""
 
 class AccessTokenError(OAuthException):
     """ Errors related to access token"""
