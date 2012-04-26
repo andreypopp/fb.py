@@ -45,7 +45,7 @@ __all__ = (
     "UnknownFacebookError", "OAuthException", "GraphMethodException",
 
     "TimelineIsNotActivated", "UniqueActionAlreadyExists", "AccessTokenError",
-    "AuthCodeError", "PermissionRequired",
+    "StaledAccessTokenError", "AuthCodeError", "PermissionRequired",
 
     "API", "OpenGraphLocation",
     "retry_on_error",)
@@ -119,7 +119,7 @@ class OAuthException(FacebookError):
     PERMISSION_REQUIRED = re.compile("\(#200\) Requires extended permission:")
 
     ACCESS_TOKEN_SESSION_EXPIRED = re.compile(
-        "Error validating access token: Session has expired at unix time")
+        "Error invalidating access token: Session has expired at unix time")
 
     USER_GEOBLOCKED = re.compile(
         "\(#200\) User is not in an allowed country for this app")
@@ -181,7 +181,7 @@ class OAuthException(FacebookError):
             return AccessTokenError(message, data, status)
         m = cls.ACCESS_TOKEN_SESSION_EXPIRED.match(message)
         if m:
-            return AccessTokenError(message, data, status)
+            return StaledAccessTokenError(message, data, status)
         m = cls.USER_GEOBLOCKED.match(message)
         if m:
             return AccessTokenError(message, data, status)
@@ -234,6 +234,9 @@ class PermissionRequired(OAuthException):
 
 class AccessTokenError(OAuthException):
     """ Errors related to access token"""
+
+class StaledAccessTokenError(AccessTokenError):
+    """ Errors related to access token which require to renew access token"""
 
 class AuthCodeError(OAuthException):
     """ Errors related to auth code"""
