@@ -396,6 +396,32 @@ class API(RequestHandler, LocationAware):
                 json_result=False)
         return data.split("=")[1]
 
+    def exchange_access_token(self, access_token):
+        """ Exchange ``access_token`` for an extended one
+
+        See [1] for more info.
+
+        :param access_token:
+            access token to exchange
+
+        :return:
+            newly issued access token with extended validness date
+
+        [1]: https://developers.facebook.com/docs/authentication/access-token-expiration/
+        """
+        params = {
+            "client_id": self.app_id,
+            "client_secret": self.app_secret,
+            "grant_type": "fb_exchange_token",
+            "fb_exchange_token": access_token
+        }
+
+        data = self.request("GET", "/oauth/access_token", params,
+                json_result=False)
+
+        parsed = urlparse.parse_qs(data)
+        return parsed["access_token"][0]
+
     def get_access_token(self, app_id, app_secret, redirect_uri, code):
         """ Get the access token for `code`
 
